@@ -67,6 +67,32 @@ CREATE TABLE cita_medicamento (
 );
 
 
+INSERT INTO informe_citas_diario (fecha_cita, sede, medico, total_pacientes)
+SELECT 
+    c.fecha,
+    s.nombre AS sede,
+    m.nombre AS medico,
+    COUNT(DISTINCT c.paciente_id) AS total_pacientes
+FROM cita c
+INNER JOIN sede s ON c.sede_id = s.sede_id
+INNER JOIN medico m ON c.medico_id = m.medico_id
+GROUP BY c.fecha, s.nombre, m.nombre;
+
+
+-- --------------------------------------------------
+-- Tabla para almacenar informes de citas diarias ---
+-- --------------------------------------------------
+
+CREATE TABLE informe_citas_diario (
+    informe_id INT AUTO_INCREMENT PRIMARY KEY,
+    fecha_cita DATE NOT NULL,
+    sede VARCHAR(120) NOT NULL,
+    medico VARCHAR(120) NOT NULL,
+    total_pacientes INT NOT NULL,
+    fecha_actualizacion DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+
 INSERT INTO facultad (facultad_id, nombre, decano) VALUES (1, 'Medicina', 'Dr. Wilson');
 INSERT INTO facultad (facultad_id, nombre, decano) VALUES (2, 'Ciencias', 'Dr. Palmer');
 
